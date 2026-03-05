@@ -1,16 +1,11 @@
 package com.tunduk
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -30,89 +25,130 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tunduk.ui.theme.TundukTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("Lifecycle", "onCreate called")
         setContent {
-            TundukTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color(0xFFD2E8D4) // Light green background from screenshot
-                ) {
-                    BusinessCardApp()
-                }
+            // Применяем фоновый цвет ко всему приложению
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color(0xFFD2E8D4) // Светло-зеленый фон
+            ) {
+                BusinessCardApp()
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("Lifecycle", "onStart called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("Lifecycle", "onResume called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("Lifecycle", "onPause called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("Lifecycle", "onStop called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("Lifecycle", "onDestroy called")
     }
 }
 
 @Composable
 fun BusinessCardApp() {
     Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // The main content is weighted to push the contact info to the bottom.
+        // Верхняя/центральная часть с именем и должностью
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            MainInfo()
+            MainInfoSection()
         }
-        ContactInfo()
+
+        // Нижняя часть с контактной информацией
+        ContactInfoSection()
+        
+        // Отступ снизу
+        Spacer(modifier = Modifier.height(48.dp))
     }
 }
 
 @Composable
-fun MainInfo(modifier: Modifier = Modifier) {
+fun MainInfoSection() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = modifier
+        verticalArrangement = Arrangement.Center
     ) {
-        // In a real app, you would use your own logo from res/drawable
+        // Логотип (Box с иконкой внутри)
         Box(
             modifier = Modifier
                 .size(100.dp)
-                .background(Color(0xFF073042), shape = RoundedCornerShape(16.dp))
+                .background(Color(0xFF073042), shape = RoundedCornerShape(8.dp)),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Person, // Placeholder Icon
-                contentDescription = "Logo",
-                tint = Color(0xFF3ddc84),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(12.dp)
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+                tint = Color(0xFF3DDC84),
+                modifier = Modifier.size(80.dp)
             )
         }
+        
+        // Имя
         Text(
             text = "Jaina joodonbecova",
-            fontSize = 30.sp,
+            fontSize = 40.sp,
             fontWeight = FontWeight.Light,
-            modifier = Modifier.padding(top = 24.dp)
+            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
         )
+        
+        // Должность
         Text(
             text = "Android Developer Extraordinaire",
-            fontSize = 16.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF006D3B) // Darker green for accessibility
+            color = Color(0xFF006D3B)
         )
     }
 }
 
 @Composable
-fun ContactInfo(modifier: Modifier = Modifier) {
+fun ContactInfoSection() {
     Column(
-        modifier = modifier.padding(bottom = 48.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        ContactRow(icon = Icons.Default.Phone, text = "+11 (123) 444 555 666")
-        ContactRow(icon = Icons.Default.Share, text = "@AndroidDev")
-        ContactRow(icon = Icons.Default.Email, text = "jen.doe@android.com")
+        ContactRow(
+            icon = Icons.Default.Phone,
+            text = "+11 (123) 444 555 666"
+        )
+        ContactRow(
+            icon = Icons.Default.Share,
+            text = "@AndroidDev"
+        )
+        ContactRow(
+            icon = Icons.Default.Email,
+            text = "jen.doe@android.com"
+        )
     }
 }
 
@@ -120,22 +156,29 @@ fun ContactInfo(modifier: Modifier = Modifier) {
 fun ContactRow(icon: ImageVector, text: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(24.dp)
+        modifier = Modifier.padding(horizontal = 24.dp)
     ) {
-        Icon(icon, contentDescription = null, tint = Color(0xFF006D3B))
-        Text(text = text, style = MaterialTheme.typography.bodyLarge)
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = Color(0xFF006D3B),
+            modifier = Modifier.size(24.dp)
+        )
+        Text(
+            text = text,
+            modifier = Modifier.padding(start = 20.dp),
+            fontSize = 16.sp
+        )
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun BusinessCardPreview() {
-    TundukTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color(0xFFD2E8D4)
-        ) {
-            BusinessCardApp()
-        }
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFFD2E8D4)
+    ) {
+        BusinessCardApp()
     }
 }
